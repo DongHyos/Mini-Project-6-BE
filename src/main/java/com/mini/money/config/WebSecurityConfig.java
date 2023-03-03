@@ -2,7 +2,6 @@ package com.mini.money.config;
 
 
 import com.mini.money.jwt.JwtFilter;
-import com.mini.money.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -33,7 +32,6 @@ public class WebSecurityConfig {
           "/v2/api-docs", "/webjars/**","/v3/api-docs**"
   };
 
-  private final JwtProvider jwtProvider;
   private final JwtFilter jwtFilter;
 
   @Bean //회원 insert 서비스에서 비밀번호 암호화/복호화에 사용됨
