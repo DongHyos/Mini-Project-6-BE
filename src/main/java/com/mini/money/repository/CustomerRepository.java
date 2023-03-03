@@ -6,9 +6,13 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface CustomerRepository extends JpaRepository<Customer, String> {
 
-    Customer findByEmail(String email);
+    Optional<Customer> findByEmail(String email);
+
+    boolean existsByEmail(String email);
 
     @Modifying
     @Query(value = "UPDATE customer c SET c.password = :password, c.phone = :phone WHERE c.email = :email", nativeQuery = true)

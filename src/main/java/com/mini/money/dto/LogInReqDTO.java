@@ -7,8 +7,14 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Collection;
 import java.util.Collections;
+
+import static com.mini.money.dto.ValidatorMessage.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +25,12 @@ import java.util.Collections;
 @ApiModel(value = "로그인")
 public class LogInReqDTO {
 
+    @NotBlank(message = EMPTY_MESSAGE)
+    @Email(message = EMAIL_MESSAGE)
     private String email;
+
+    @NotNull(message = EMPTY_MESSAGE)
+    @Pattern(regexp = MEMBER_PW_FORMAT, message = MEMBER_PW_MESSAGE)
     private String password;
 
     public LogInReqDTO(Claims claims) {

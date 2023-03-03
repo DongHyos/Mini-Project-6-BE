@@ -13,19 +13,19 @@ import org.springframework.http.ResponseEntity;
 import java.util.Map;
 
 public interface AuthService {
-    ResponseEntity signup(CustomerReqDTO signupReqDTO);
+    void signup(CustomerReqDTO signupReqDTO);
 
     LogInResDTO login(LogInReqDTO logInReqDTO);
-
-    String updateInfo(UpdateInfoReqDTO updateInfoReqDTO, String email);
-
-    Map<String, String> checkPassword(String email, String requestPassword);
-
-    MyCustomerInfoResDTO findMyInfo(String email);
-
-    MyCustomerDetailInfoResDTO findMyDetailInfo(String email);
-
-    String customerDetailInfo(String email, CustomerDetailReqDTO reqDTO);
-
-    String updateDetailInfo(UpdateDetailReqDTO updateDetailReqDTO, String email);
+//
+//    String updateInfo(UpdateInfoReqDTO updateInfoReqDTO, String email);
+//
+//    Map<String, String> checkPassword(String email, String requestPassword);
+//
+//    MyCustomerInfoResDTO findMyInfo(String email);
+//
+//    MyCustomerDetailInfoResDTO findMyDetailInfo(String email);
+//
+//    String customerDetailInfo(String email, CustomerDetailReqDTO reqDTO);
+//
+//    String updateDetailInfo(UpdateDetailReqDTO updateDetailReqDTO, String email);
 }
