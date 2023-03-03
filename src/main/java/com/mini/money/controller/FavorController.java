@@ -1,6 +1,7 @@
 package com.mini.money.controller;
 
 
+import com.mini.money.dto.LoanResDTO;
 import com.mini.money.dto.LogInReqDTO;
 import com.mini.money.service.FavorService;
 import io.swagger.annotations.Api;
@@ -9,12 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +21,13 @@ import java.util.HashMap;
 public class FavorController {
 
     private final FavorService service;
+
+    @GetMapping("/mypage/favor")
+    @ApiOperation(value = "내 찜 목록", notes = "회원의 찜 목록을 확인한다.")
+    public List<LoanResDTO> selectFavorList(@AuthenticationPrincipal LogInReqDTO logInReqDTO){
+        String email = logInReqDTO.getEmail();
+        return service.selectFavorList(email);
+    }
 
     @PostMapping("/favor")
     @ApiOperation(value = "찜 목록 상품 추가", notes = "제품ID(snq)를 통해 찜목록에 상품을 추가한다.")

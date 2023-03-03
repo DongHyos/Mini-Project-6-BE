@@ -1,5 +1,6 @@
 package com.mini.money.controller;
 
+import com.mini.money.dto.LoanResDTO;
 import com.mini.money.dto.LogInReqDTO;
 import com.mini.money.service.CartService;
 import io.swagger.annotations.Api;
@@ -11,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,6 +20,13 @@ import java.util.HashMap;
 public class CartController {
 
     private final CartService cartService;
+
+    @GetMapping("/mypage/cart")
+    @ApiOperation(value = "장바구니 확인", notes = "회원의 장바구니를 확인한다.")
+    public List<LoanResDTO> selectCartList(@AuthenticationPrincipal LogInReqDTO logInReqDTO){
+        String email = logInReqDTO.getEmail();
+        return cartService.selectCartList(email);
+    }
 
     @PostMapping("/cart")
     @ApiOperation(value = "장바구니 상품 추가", notes = "제품ID(snq)를 통해 장바구니에 상품을 추가한다.")

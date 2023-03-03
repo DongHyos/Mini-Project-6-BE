@@ -16,6 +16,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,8 +40,11 @@ public class CustomerController {
 
     @PostMapping("/signup")
     @ApiOperation(value = "회원가입", notes = "필수 정보를 입력받아 회원가입 시도, 성공 시 DB에 저장한다.")
-    public ResponseEntity signUp(@RequestBody CustomerReqDTO signupReqDTO) {
-        return authService.signup(signupReqDTO);
+    public ResponseEntity<Void> signUp(@Valid @RequestBody CustomerReqDTO signupReqDTO) {
+        authService.signup(signupReqDTO);
+        return ResponseEntity
+                .created(URI.create("/signup"))
+                .build();
     }
 
     @PostMapping("/login")
