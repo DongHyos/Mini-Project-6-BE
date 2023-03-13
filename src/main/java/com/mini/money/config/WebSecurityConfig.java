@@ -1,6 +1,8 @@
 package com.mini.money.config;
 
 
+import com.mini.money.jwt.JwtAccessDeniedHandler;
+import com.mini.money.jwt.JwtAuthenticationEntryPoint;
 import com.mini.money.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -28,11 +30,13 @@ public class WebSecurityConfig {
 
   private static final String[] PUBLIC_URLS = { //이 URL은 권한 검사안함
           "**/signup", "**/login" , "**/logout", "/finance/loan", "/finance/recommend/loan",
-          "/finance/itemlist/**", "/finance/loan/detail", "/swagger-resources/**", "/swagger-ui.html","/swagger-ui/**",
+          "/finance/itemlist/**", "/finance/loan/detail/**", "/swagger-resources/**", "/swagger-ui.html","/swagger-ui/**",
           "/v2/api-docs", "/webjars/**","/v3/api-docs**"
   };
 
   private final JwtFilter jwtFilter;
+  private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+  private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
   @Bean //회원 insert 서비스에서 비밀번호 암호화/복호화에 사용됨
   public PasswordEncoder passwordEncoderParser() {
@@ -60,6 +64,9 @@ public class WebSecurityConfig {
 //            .and()
 
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // jwt token으로 인증할것이므로 세션필요없으므로 생성안함.
+
+            .and().exceptionHandling()
+            .accessDeniedHandler(jwtAccessDeniedHandler).authenticationEntryPoint(jwtAuthenticationEntryPoint)
 
             .and()
 

@@ -2,7 +2,7 @@ package com.mini.money.jwt;
 
 
 
-import com.mini.money.dto.LogInReqDTO;
+import com.mini.money.dto.member.LoginRequest;
 import com.mini.money.service.TokenService;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.Builder;
@@ -35,12 +35,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
         try{
             if(!tokenService.checkBlacklist(tokenHeader)){
-                LogInReqDTO logInReqDTO = jwtProvider.tokenToUser(tokenHeader);
-                if(logInReqDTO !=null) {
+                LoginRequest loginRequest = jwtProvider.tokenToUser(tokenHeader);
+                if(loginRequest !=null) {
                     SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-                            logInReqDTO,
+                            loginRequest,
                             "",
-                            logInReqDTO.getAuthorities()));
+                            loginRequest.getAuthorities()));
                 }
             }
 

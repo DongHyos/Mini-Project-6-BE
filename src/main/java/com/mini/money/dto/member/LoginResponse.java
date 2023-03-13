@@ -1,4 +1,4 @@
-package com.mini.money.dto;
+package com.mini.money.dto.member;
 
 
 import com.mini.money.entity.Customer;
@@ -13,20 +13,17 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @ApiModel(value = "로그인 후 토큰 출력")
-public class LogInResDTO {
+public class LoginResponse {
     private String email;
     private String name;
     private String token;
-    private String message;
 
-    public LogInResDTO(Customer customer, String token){
-        this.email = customer.getEmail();
-        this.name = customer.getName();
-        this.token = token;
-    }
-
-    public LogInResDTO(String message){
-        this.message = message;
+    public static LoginResponse from(final Customer customer, final String token) {
+        return new LoginResponse(
+                customer.getEmail(),
+                customer.getName(),
+                token
+        );
     }
 
 }

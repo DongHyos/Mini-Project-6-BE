@@ -1,6 +1,6 @@
 //package com.mini.money.controller;
 //
-//import com.mini.money.dto.LogInReqDTO;
+//import com.mini.money.dto.member.LoginRequest;
 //import com.mini.money.entity.Customer;
 //import com.mini.money.repository.CustomerRepository;
 //import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@
 //    @Test
 //    void name() {
 //        String email = "dong8707@naver.com";
-////        LogInReqDTO customer = cs.findByEmail(email);
+////        LoginRequest customer = cs.findByEmail(email);
 ////        System.out.println(controller.findMyDetailInfo(customer));
 //    }
 //}

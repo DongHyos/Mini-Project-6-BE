@@ -9,8 +9,7 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class CartReqDTO {
+public class CartRequest {
 
     private String email;
 

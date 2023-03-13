@@ -1,42 +1,59 @@
-//package com.mini.money.service.impl;
-//
-//import com.mini.money.dto.itemlist.WholeResDTO;
-//import com.mini.money.entity.Loan;
-//import com.mini.money.parameter.*;
-//import com.mini.money.service.LoanService;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.PageRequest;
-//import org.springframework.data.domain.Pageable;
-//
-//import java.util.List;
-//
-//import static org.assertj.core.api.Assertions.assertThat;
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//@SpringBootTest
-//class LoanServiceImplTest {
-//
-//    @Autowired
-//    LoanService loanService;
-//
-//
-//    @Test
-//    void jj() {
-//        System.out.println(loanService.selectLoanList());
-//    }
-//    @Test
-//    void name() {
-//        Pageable pageable = PageRequest.of(0, 10);
-//        List<WholeResDTO> test = loanService.selectAll(pageable);
-//        System.out.println(test);
-//        assertThat(test).hasSize(10);
-//
-//    }
-//
-//    @Test
+package com.mini.money.service.impl;
+
+import com.mini.money.dto.loan.LoanResponse;
+import com.mini.money.service.FavorService;
+import com.mini.money.service.LoanService;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest
+class LoanServiceImplTest {
+
+    @Autowired
+    LoanService loanService;
+
+    @Autowired
+    FavorService favorService;
+
+    @Test
+    void 메인페이지_대출리스트_조회() {
+        // Given
+        // When
+        List<LoanResponse> loanResponses = loanService.selectLoanList();
+        // Then
+        System.out.println(loanResponses);
+        assertThat(loanResponses).hasSize(3);
+    }
+
+    @Test
+    void 전체_대출리스트() {
+        // Given
+        Pageable pageable = PageRequest.of(0, 10);
+        // When
+        Page<LoanResponse> test = loanService.selectAll(pageable);
+        // Then
+        System.out.println(test);
+        assertThat(test).hasSize(10);
+    }
+
+    @Test
+    void 로그인안했을때_추천대출_리스트() {
+        // Given
+        // When
+        Page<LoanResponse> loanResponses = favorService.popularList();
+        // Then
+        System.out.println(loanResponses);
+    }
+
+    //    @Test
 //    void e() {
 //        Pageable pageable = PageRequest.of(0, 10);
 //        Office office = Office.기타;
@@ -124,4 +141,5 @@
 //        List<WholeResDTO> test = loanService.selectByKeyword(ma, pageable);
 //        System.out.println(test);
 //    }
-//}
+
+}

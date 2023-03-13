@@ -9,6 +9,7 @@ public class InputFieldException extends MoneyException {
     protected static final String PASSWORD = "password";
     protected static final String NAME = "name";
     protected static final String PHONE = "phone";
+    protected static final String LOAN = "loan";
 
     private final String field;
 

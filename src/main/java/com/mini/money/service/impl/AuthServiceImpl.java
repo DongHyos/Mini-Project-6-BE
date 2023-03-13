@@ -1,186 +1,152 @@
 package com.mini.money.service.impl;
 
-import com.mini.money.dto.CustomerDetailReqDTO;
-import com.mini.money.dto.CustomerReqDTO;
-import com.mini.money.dto.LogInReqDTO;
-import com.mini.money.dto.LogInResDTO;
-import com.mini.money.dto.myinfo.MyCustomerDetailInfoResDTO;
-import com.mini.money.dto.myinfo.MyCustomerInfoResDTO;
-import com.mini.money.dto.myinfo.UpdateDetailReqDTO;
-import com.mini.money.dto.myinfo.UpdateInfoReqDTO;
+import com.mini.money.dto.member.CustomerDetailRequest;
+import com.mini.money.dto.member.CustomerRequest;
+import com.mini.money.dto.member.LoginRequest;
+import com.mini.money.dto.member.LoginResponse;
+import com.mini.money.dto.mypage.*;
 import com.mini.money.entity.Customer;
-import com.mini.money.entity.CustomerDetail;
 import com.mini.money.exceptrion.member.DuplicateEmailException;
 import com.mini.money.exceptrion.member.IdPasswordMismatchException;
 import com.mini.money.exceptrion.member.NoSuchMemberException;
 import com.mini.money.jwt.JwtProvider;
-import com.mini.money.repository.CustomerDetailRepository;
 import com.mini.money.repository.CustomerRepository;
 import com.mini.money.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final CustomerRepository customerRepository;
-    private final CustomerDetailRepository customerDetailRepository;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
-
+    /**
+     * 회원가입
+     * @param customerRequest 이메일(email), 비밀번호(password), 이름(name), 휴대폰번호(phone)
+     * 이메일 중복 체크 후 회원 테이블에 저장
+     */
     @Transactional
     @Override
-    public void signup(final CustomerReqDTO signupReqDTO) {
-        duplicateEmail(signupReqDTO.getEmail());
+    public void signup(final CustomerRequest customerRequest) {
+        duplicateEmail(customerRequest.getEmail());
 
-        String password = encodingPassword(signupReqDTO.getPassword());
-        signupReqDTO.setPassword(password);
-        Customer customer = signupReqDTO.toEntity();
+        String password = encodingPassword(customerRequest.getPassword());
+        customerRequest.setPassword(password);
+        Customer customer = customerRequest.toEntity();
 
         customerRepository.save(customer);
-
     }
 
+    /**
+     * 로그인
+     * @param loginRequest 이메일(email), 비밀번호(password)
+     * @return 이메일(email), 이름(name), 토큰(token) 값을 가진 LoginResponse를 반환
+     * 이메일을 통한 회원 조회, 비밀번호 확인
+     */
     @Override
-    public LogInResDTO login(LogInReqDTO logInReqDTO) {
+    public LoginResponse login(final LoginRequest loginRequest) {
+        Customer findCustomer = customerRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+        validatePassword(findCustomer, loginRequest.getPassword());
 
-        Customer findCustomer = customerRepository.findByEmail(logInReqDTO.getEmail())
+        String token = jwtProvider.makeToken(findCustomer);
+        return LoginResponse.from(findCustomer, token);
+    }
+
+    /**
+     * 회원 정보 수정
+     * @param loginRequest 이메일(email), 비밀번호(password)
+     * @param updateCustomerDataRequest 비밀번호(password), 전화번호(phone)
+     * 수정 시 비밀번호 or 전화번호 하나만 수정한다고 하면 기존의 값을 전달
+     */
+    @Transactional
+    @Override
+    public void updateCustomerData(final LoginRequest loginRequest, final UpdateCustomerDataRequest updateCustomerDataRequest) {
+        Customer customer = customerRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
 
-        validatePassword(findCustomer, logInReqDTO.getPassword());
-        String token = jwtProvider.makeToken(findCustomer);
+        String password = updateCheckByPassword(updateCustomerDataRequest);
+        String phone = updateCheckByPhone(updateCustomerDataRequest);
 
-        Customer customer = null;
-            try {
-                customer = customerRepository.findByEmail(logInReqDTO.getEmail());
-            }
-            catch (Exception e){
-            }
-            if(customer ==null || !passwordEncoder.matches(logInReqDTO.getPassword(),customer.getPassword())){
-                throw new IllegalArgumentException();
-            }
-
-            String token = jwtProvider.makeToken(customer);
-            LogInResDTO logInResDTO = new LogInResDTO(customer, token);
-
-            return logInResDTO;
-
-
+        customer.update(password, phone);
     }
 
-//    @Transactional
-//    @Modifying
-//    @Override
-//    public String updateInfo(UpdateInfoReqDTO updateInfoReqDTO, String email) {
-//        System.out.println(updateInfoReqDTO);
-//        Customer customer = customerRepository.findByEmail(email);
-//        String password = updateInfoReqDTO.getPassword();
-//        String phone = updateInfoReqDTO.getPhone();
-//
-//        if (password == null || password.isBlank()) {
-//            password = customer.getPassword();
-//        }
-//
-//        if (phone == null || phone.isBlank()) {
-//            phone = customer.getPhone();
-//        }
-//
-//        if (password.length() < 20) {
-//            password = encodingPassword(password);
-//        }
-//
-//        Integer result = customerRepository.updateInfo(password, phone, email);
-//
-//        if (result > 0) {
-//            return "success";
-//        } else {
-//            return "false";
-//        }
-//    }
-//
-//    @Override
-//    public Map<String, String> checkPassword(String email, String requestPassword) {
-//        Customer customer = customerRepository.findByEmail(email);
-//        Map<String, String> customerData = new HashMap<>();
-//        if (!passwordEncoder.matches(requestPassword, customer.getPassword())) {
-//            throw new IllegalArgumentException();
-//        }
-//        customerData.put("name", customer.getName());
-//        return customerData;
-//    }
-//
-//    @Override
-//    public MyCustomerInfoResDTO findMyInfo(String email) {
-//        Customer customer = customerRepository.findByEmail(email);
-//        MyCustomerInfoResDTO my = new MyCustomerInfoResDTO(
-//                customer.getEmail(), customer.getName(), customer.getPhone()
-//        );
-//        return my;
-//    }
-//
-//    @Override
-//    public MyCustomerDetailInfoResDTO findMyDetailInfo(String email) {
-//        try {
-//            Customer loginCustomer = customerRepository.findByEmail(email);
-//            CustomerDetail customerDetail = customerDetailRepository.findByCustomer(loginCustomer).orElseThrow(() -> new IllegalStateException("추가 정보 등록 요망"));
-//
-//            MyCustomerDetailInfoResDTO my = new MyCustomerDetailInfoResDTO(
-//                    customerDetail.getAge(), customerDetail.getAddress(), customerDetail.getJob(),
-//                    customerDetail.getBank(), customerDetail.getCrdtGrade(), customerDetail.getIncome()
-//            );
-//
-//            return my;
-//        } catch (IllegalStateException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
-//
-//    @Transactional
-//    @Override
-//    public String customerDetailInfo(String email, CustomerDetailReqDTO reqDTO) {
-//        Customer loginCustomer = customerRepository.findByEmail(email);
-//        CustomerDetail customerDetail = reqDTO.toEntity(loginCustomer);
-//        customerDetailRepository.save(customerDetail);
-//
-//        return "success";
-//    }
-//
-//    @Transactional
-//    @Modifying
-//    @Override
-//    public String updateDetailInfo(UpdateDetailReqDTO detailReqDTO, String email) {
-//        Customer customer = customerRepository.findByEmail(email);
-//        CustomerDetail detail = customerDetailRepository.findByCustomer(customer).orElse(null);
-//
-//        String address = detailReqDTO.getAddress() == null || detailReqDTO.getAddress().isBlank()? detail.getAddress():detailReqDTO.getAddress();
-//        Integer age = detailReqDTO.getAge() == null? detail.getAge():detailReqDTO.getAge();
-//        Double crdtGrade = detailReqDTO.getCrdtGrade() == null? detail.getCrdtGrade():detailReqDTO.getCrdtGrade();
-//        String job = detailReqDTO.getJob() == null || detailReqDTO.getJob().isBlank()? detail.getJob():detailReqDTO.getJob();
-//        String income = detailReqDTO.getIncome() == null? detail.getIncome():detailReqDTO.getIncome();
-//        String bank = detailReqDTO.getBank() == null || detailReqDTO.getBank().isBlank()? detail.getBank():detailReqDTO.getBank();
-//
-//        Integer result = customerDetailRepository.updateDetailInfo(
-//                address,
-//                age,
-//                crdtGrade,
-//                job,
-//                income,
-//                bank,
-//                detail.getId());
-//
-//        return result > 0? "success":"failed";
-//    }
+    /**
+     * 회원 조회를 위한 추가 비밀번호 확인
+     * @param loginRequest 이메일(email), 비밀번호(password)
+     * @param passwordRequest 비밀번호(password)
+     * @return 회원 확인 후 성공한다면 회원의 이름 전달
+     */
+    @Override
+    public CheckPasswordResponse checkPassword(final LoginRequest loginRequest, final CheckPasswordRequest passwordRequest) {
+        Customer findCustomer = customerRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+        validatePassword(findCustomer, passwordRequest.getPassword());
 
+        return CheckPasswordResponse.from(findCustomer);
+    }
+
+    /**
+     * 회원 필수 정보 조회
+     * @param loginRequest 이메일(email), 비밀번호(password)
+     * @return 이메일(email), 이름(name), 휴대폰번호(phone)
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public CustomerDataResponse findData(final LoginRequest loginRequest) {
+        Customer findCustomer = customerRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+        return CustomerDataResponse.from(findCustomer);
+    }
+
+    /**
+     * 회원 상세 정보(추가 정보) 조회
+     * @param loginRequest 이메일(email), 비밀번호(password)
+     * @return 나이(age), 주소(address), 직업 (job), bank(주거래 은행), crdtGrade(신용점수), income(소득)
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public CustomerDetailDataResponse findDetailData(final LoginRequest loginRequest) {
+        Customer findCustomer = customerRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+
+        return CustomerDetailDataResponse.from(findCustomer);
+    }
+
+    /**
+     * 회원 추가 정보 저장
+     * @param loginRequest 이메일(email), 비밀번호(password)
+     * @param customerDetailRequest 나이(age), 주소(address), 직업 (job), bank(주거래 은행), crdtGrade(신용점수), income(소득)
+     */
+    @Transactional
+    @Override
+    public void customerDetailInfo(final LoginRequest loginRequest, final CustomerDetailRequest customerDetailRequest) {
+        Customer loginCustomer = customerRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+
+        Customer customerDetail = customerDetailRequest.toEntity(loginCustomer);
+        customerRepository.save(customerDetail);
+    }
+
+    public String updateCheckByPassword(final UpdateCustomerDataRequest updateCustomerDataRequest) {
+        String password = encodingPassword(updateCustomerDataRequest.getPassword());
+        if (password == null || password.isBlank()) {
+            password = updateCustomerDataRequest.getPassword();
+        }
+        return password;
+    }
+
+    public String updateCheckByPhone(final UpdateCustomerDataRequest updateCustomerDataRequest) {
+        String phone = updateCustomerDataRequest.getPhone();
+        if (phone == null || phone.isBlank()) {
+            phone = updateCustomerDataRequest.getPhone();
+        }
+        return phone;
+    }
 
     public void duplicateEmail(final String email) {
         if (customerRepository.existsByEmail(email)) {
@@ -188,7 +154,7 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    private String encodingPassword(String password) {
+    private String encodingPassword(final String password) {
         return passwordEncoder.encode(password);
     }
 

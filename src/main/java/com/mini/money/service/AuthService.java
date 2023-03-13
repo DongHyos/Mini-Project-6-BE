@@ -1,31 +1,23 @@
 package com.mini.money.service;
 
-import com.mini.money.dto.CustomerDetailReqDTO;
-import com.mini.money.dto.CustomerReqDTO;
-import com.mini.money.dto.LogInReqDTO;
-import com.mini.money.dto.LogInResDTO;
-import com.mini.money.dto.myinfo.MyCustomerDetailInfoResDTO;
-import com.mini.money.dto.myinfo.MyCustomerInfoResDTO;
-import com.mini.money.dto.myinfo.UpdateDetailReqDTO;
-import com.mini.money.dto.myinfo.UpdateInfoReqDTO;
-import org.springframework.http.ResponseEntity;
-
-import java.util.Map;
+import com.mini.money.dto.member.LoginRequest;
+import com.mini.money.dto.member.CustomerDetailRequest;
+import com.mini.money.dto.member.CustomerRequest;
+import com.mini.money.dto.member.LoginResponse;
+import com.mini.money.dto.mypage.*;
 
 public interface AuthService {
-    void signup(CustomerReqDTO signupReqDTO);
+    void signup(CustomerRequest signupReqDTO);
 
-    LogInResDTO login(LogInReqDTO logInReqDTO);
-//
-//    String updateInfo(UpdateInfoReqDTO updateInfoReqDTO, String email);
-//
-//    Map<String, String> checkPassword(String email, String requestPassword);
-//
-//    MyCustomerInfoResDTO findMyInfo(String email);
-//
-//    MyCustomerDetailInfoResDTO findMyDetailInfo(String email);
-//
-//    String customerDetailInfo(String email, CustomerDetailReqDTO reqDTO);
-//
-//    String updateDetailInfo(UpdateDetailReqDTO updateDetailReqDTO, String email);
+    LoginResponse login(LoginRequest loginRequest);
+
+    void updateCustomerData(LoginRequest loginRequest, UpdateCustomerDataRequest updateCustomerDataRequest);
+
+    CheckPasswordResponse checkPassword(LoginRequest loginRequest, CheckPasswordRequest passwordRequest);
+
+    CustomerDataResponse findData(LoginRequest loginRequest);
+
+    CustomerDetailDataResponse findDetailData(LoginRequest loginRequest);
+
+    void customerDetailInfo(LoginRequest loginRequest, CustomerDetailRequest reqDTO);
 }

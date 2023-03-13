@@ -1,7 +1,7 @@
 //package com.mini.money.service;
 //
-//import com.mini.money.dto.CustomerDetailReqDTO;
-//import com.mini.money.dto.myinfo.MyCustomerDetailInfoResDTO;
+//import com.mini.money.dto.member.CustomerDetailRequest;
+//import com.mini.money.dto.mypage.CustomerDetailDataResponse;
 //import com.mini.money.repository.CustomerRepository;
 //import org.junit.jupiter.api.Test;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@
 //    @Test
 //    void name() {
 //        String email = "dong8707@naver.com";
-//        CustomerDetailReqDTO customerDetailReqDTO = new CustomerDetailReqDTO(26, "서울", "근로자", "우리은행", 800.0, 3500);
+//        CustomerDetailRequest customerDetailReqDTO = new CustomerDetailRequest(26, "서울", "근로자", "우리은행", 800.0, 3500);
 //
 //        cs.customerDetailInfo(email, customerDetailReqDTO);
 //
@@ -31,7 +31,7 @@
 //        String email = "dong8707000@naver.com";
 //
 //        try {
-//            MyCustomerDetailInfoResDTO my = cs.findMyDetailInfo(email);
+//            CustomerDetailDataResponse my = cs.findMyDetailInfo(email);
 //            System.out.println(my);
 //        } catch (IllegalStateException e) {
 //            e.printStackTrace();

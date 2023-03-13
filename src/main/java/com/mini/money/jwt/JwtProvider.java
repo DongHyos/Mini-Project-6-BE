@@ -1,10 +1,8 @@
 package com.mini.money.jwt;
 
-import com.mini.money.dto.LogInReqDTO;
+import com.mini.money.dto.member.LoginRequest;
 import com.mini.money.entity.Customer;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +33,7 @@ public class JwtProvider {
     }
 
     //토큰에서 userDTO로 바꿈, jwt필터에서 사용, 유효성검사 해야한다
-    public LogInReqDTO tokenToUser(String token){
+    public LoginRequest tokenToUser(String token){
         Claims claims= null;
 
         if(token!=null) {
@@ -44,7 +42,7 @@ public class JwtProvider {
 
                     token = extractToken(token);
                     claims = parsingToken(token);
-                    return new LogInReqDTO(claims);
+                    return new LoginRequest(claims);
             }
 
             }catch (Exception e){
@@ -70,7 +68,7 @@ public class JwtProvider {
         return true;
     }
 
-    private String extractToken(String authorizationHeader) { //토큰 (Bearer) 떼고 토큰값만 가져오는 메서드
+    public String extractToken(String authorizationHeader) { //토큰 (Bearer) 떼고 토큰값만 가져오는 메서드
         return authorizationHeader.substring(jwtProperties.getTokenPrefix().length());
     }
 

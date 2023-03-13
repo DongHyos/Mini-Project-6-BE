@@ -1,18 +1,20 @@
 package com.mini.money.service;
 
-import com.mini.money.dto.LoanResDTO;
-import com.mini.money.entity.Cart;
+import com.mini.money.dto.cart.CartRequest;
+import com.mini.money.dto.loan.LoanResponse;
+import com.mini.money.dto.member.LoginRequest;
+import com.mini.money.entity.Customer;
 
 import java.util.List;
 
 
 public interface CartService {
 
-    String addCart(Long snq, String email);
+    void addCart(final CartRequest cartRequest);
 
-    String deleteProduct(String email, Long snq);
+    void deleteProduct(final CartRequest cartRequest);
 
-    List<LoanResDTO> selectCartList(String email);
+    List<LoanResponse> selectCartList(final LoginRequest loginRequest);
 
-    void deleteLastCart(Long snq, String email);
+    void deleteLastCart(final Customer customer);
 }

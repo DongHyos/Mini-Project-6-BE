@@ -1,4 +1,4 @@
-package com.mini.money.dto;
+package com.mini.money.dto.member;
 
 import com.mini.money.entity.Customer;
 import io.swagger.annotations.ApiModel;
@@ -16,7 +16,7 @@ import static com.mini.money.dto.ValidatorMessage.*;
 @Setter
 @ToString
 @ApiModel(value = "회원 필수 정보 입력")
-public class CustomerReqDTO {
+public class CustomerRequest {
 
     @NotBlank(message = EMPTY_MESSAGE)
     @Email(message = EMAIL_MESSAGE)

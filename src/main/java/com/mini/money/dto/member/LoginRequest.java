@@ -1,6 +1,5 @@
-package com.mini.money.dto;
+package com.mini.money.dto.member;
 
-import com.mini.money.entity.Customer;
 import io.jsonwebtoken.Claims;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
@@ -23,7 +22,7 @@ import static com.mini.money.dto.ValidatorMessage.*;
 @ToString
 @Builder
 @ApiModel(value = "로그인")
-public class LogInReqDTO {
+public class LoginRequest {
 
     @NotBlank(message = EMPTY_MESSAGE)
     @Email(message = EMAIL_MESSAGE)
@@ -33,15 +32,8 @@ public class LogInReqDTO {
     @Pattern(regexp = MEMBER_PW_FORMAT, message = MEMBER_PW_MESSAGE)
     private String password;
 
-    public LogInReqDTO(Claims claims) {
+    public LoginRequest(Claims claims) {
         this.email = claims.get("email", String.class);
-    }
-
-    public Customer toEntity(){
-        return Customer.builder()
-                .email(this.email)
-                .password(this.password)
-                .build();
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {

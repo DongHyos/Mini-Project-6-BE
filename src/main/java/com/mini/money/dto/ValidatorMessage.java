@@ -13,6 +13,5 @@ public class ValidatorMessage {
     public static final String MEMBER_PW_FORMAT = "^(?=.*[a-zA-Z])(?=.*[0-9]).{8,16}$";
 
     public static final String SERVER_ERROR_MESSAGE = "예상치 못한 문제가 발생했습니다. 개발자에게 문의하세요.";
-
     public static final String FORMAT_MESSAGE = "날짜 및 시간 데이터 형식이 올바르지 않습니다.";
 }

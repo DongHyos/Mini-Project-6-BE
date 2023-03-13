@@ -1,18 +1,20 @@
 package com.mini.money.service;
 
-import com.mini.money.dto.LoanResDTO;
-import com.mini.money.dto.itemlist.WholeResDTO;
+import com.mini.money.dto.favor.FavorRequest;
+import com.mini.money.dto.loan.LoanResponse;
+import com.mini.money.dto.member.LoginRequest;
+import com.mini.money.entity.Favor;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface FavorService {
 
-    String addFavor(String email, Long snq);
+    void addFavor(final FavorRequest favorRequest);
 
-    String deleteFavor(String email, Long snq);
+    void deleteFavor(final FavorRequest favorRequest);
 
-    List<LoanResDTO> selectFavorList(String email);
+    List<LoanResponse> selectFavorList(final LoginRequest loginRequest);
 
-    Page<WholeResDTO> popularList();
+    Page<LoanResponse> popularList();
 }

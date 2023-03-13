@@ -1,18 +1,14 @@
-package com.mini.money.dto;
+package com.mini.money.dto.member;
 
 import com.mini.money.entity.Customer;
-import com.mini.money.entity.CustomerDetail;
 import io.swagger.annotations.ApiModel;
 import lombok.*;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@ToString
 @ApiModel(value = "회원 추가 정보 입력")
-public class CustomerDetailReqDTO {
+public class CustomerDetailRequest {
     private Integer age;
     private String address;
     private String job;
@@ -20,9 +16,13 @@ public class CustomerDetailReqDTO {
     private Double crdtGrade;
     private String income;
 
-    public CustomerDetail toEntity(Customer customer) {
-        return CustomerDetail.builder()
-                .customer(customer)
+    public Customer toEntity(final Customer customer) {
+        return Customer.builder()
+                .email(customer.getEmail())
+                .name(customer.getName())
+                .phone(customer.getPhone())
+                .password(customer.getPassword())
+                .role(customer.getRole())
                 .age(this.age)
                 .address(this.address)
                 .job(this.job)
@@ -31,5 +31,4 @@ public class CustomerDetailReqDTO {
                 .income(this.income)
                 .build();
     }
-
 }

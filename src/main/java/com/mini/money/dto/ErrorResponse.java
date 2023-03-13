@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.ConstraintViolationException;
 
 import static com.mini.money.dto.ValidatorMessage.FORMAT_MESSAGE;
+import static com.mini.money.dto.ValidatorMessage.SERVER_ERROR_MESSAGE;
 
 @Getter
 @NoArgsConstructor
@@ -27,5 +28,9 @@ public class ErrorResponse {
 
     public static ErrorResponse invalidFormat() {
         return new ErrorResponse(FORMAT_MESSAGE);
+    }
+
+    public static ErrorResponse internalServer() {
+        return new ErrorResponse(SERVER_ERROR_MESSAGE);
     }
 }

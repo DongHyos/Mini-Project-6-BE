@@ -1,6 +1,6 @@
 //package com.mini.money.service.impl;
 //
-//import com.mini.money.dto.myinfo.UpdateInfoReqDTO;
+//import com.mini.money.dto.mypage.UpdateCustomerDataRequest;
 //import org.junit.jupiter.api.Test;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.test.context.SpringBootTest;
@@ -20,7 +20,7 @@
 //        String password = null;
 //        String email = "dong87070@naver.com";
 //
-//        UpdateInfoReqDTO req = new UpdateInfoReqDTO(password, phone);
+//        UpdateCustomerDataRequest req = new UpdateCustomerDataRequest(password, phone);
 //
 //        System.out.println(authService.updateInfo(req, email));
 //
